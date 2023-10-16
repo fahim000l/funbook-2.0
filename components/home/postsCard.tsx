@@ -15,6 +15,8 @@ import { IUser } from "@/db/models/User";
 import ImageGrid from "../tools/ImageGrid";
 import { Chip, Divider } from "@mui/material";
 import { People, Public } from "@mui/icons-material";
+import PostFooter from "./PostFooter";
+import { IReaction } from "@/db/models/Reaction";
 
 interface props {
   post: {
@@ -25,12 +27,11 @@ interface props {
     medias: IMedia[] | any[];
     tags: ITag[] | any[];
     _id: string;
+    reactions: IReaction[] | any[];
   };
 }
 
 export default function PostsCard({ post }: props) {
-  console.log(post);
-
   const { authorInfo, caption, medias, postType } = post;
 
   return (
@@ -64,6 +65,8 @@ export default function PostsCard({ post }: props) {
       {/* <ImageGrid> */}
       <Divider />
       {medias?.length > 0 && <ImageGrid itemData={medias} />}
+      <Divider />
+      <PostFooter post={post} />
     </Card>
   );
 }

@@ -18,7 +18,7 @@ interface props {
   handleChange: (e: any) => void | undefined;
 }
 
-export default function TextArea({ lobyStatus, handleChange }: props) {
+export default function TextArea({ lobyStatus, handleChange, value }: props) {
   const [italic, setItalic] = React.useState(false);
   const [fontWeight, setFontWeight] = React.useState("normal");
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);

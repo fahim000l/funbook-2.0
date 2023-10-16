@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef, LegacyRef } from "react";
 import { Avatar } from "@mui/material";
 import Loby from "./Loby";
 import PostTyping from "./PostTyping";
@@ -10,14 +10,25 @@ interface props {
   lobyStatus: String;
   SetLobyStatus: React.Dispatch<React.SetStateAction<string>>;
   Formik: FormikProps<postFormik>;
+  modalToggler: LegacyRef<HTMLInputElement> | null;
 }
 
-const FeedingModal = ({ lobyStatus, SetLobyStatus, Formik }: props) => {
+const FeedingModal = ({
+  lobyStatus,
+  SetLobyStatus,
+  Formik,
+  modalToggler,
+}: props) => {
   const [tagged, setTagged] = useState([]);
 
   return (
     <div>
-      <input type="checkbox" id="feedingModal" className="modal-toggle" />
+      <input
+        ref={modalToggler}
+        type="checkbox"
+        id="feedingModal"
+        className="modal-toggle"
+      />
       <div className="modal modal-bottom lg:modal-middle z-[300]">
         <div className="modal-box p-2 h-[500px]">
           {lobyStatus === "neutral" || lobyStatus === "media" ? (

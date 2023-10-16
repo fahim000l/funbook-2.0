@@ -9,8 +9,6 @@ interface props {
 }
 
 export default function ImageGrid({ itemData }: props) {
-  console.log(itemData);
-
   return (
     <Box sx={{ height: itemData?.length > 3 ? 450 : 250, overflowY: "hidden" }}>
       <ImageList

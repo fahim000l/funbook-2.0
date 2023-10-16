@@ -85,9 +85,7 @@ const Loby = ({ SetLobyStatus, lobyStatus, Formik }: props) => {
       {lobyStatus === "media" ? (
         <div>
           <TextArea
-            handleChange={(e) =>
-              (Formik.initialValues.caption = e.target.value)
-            }
+            handleChange={(e) => (Formik.values.caption = e.target.value)}
             lobyStatus={lobyStatus}
           />
           {Formik.values.medias.length > 0 ? (
@@ -127,7 +125,7 @@ const Loby = ({ SetLobyStatus, lobyStatus, Formik }: props) => {
         </div>
       ) : (
         <TextArea
-          handleChange={(e) => (Formik.initialValues.caption = e.target.value)}
+          handleChange={(e) => (Formik.values.caption = e.target.value)}
           lobyStatus={lobyStatus}
         />
       )}

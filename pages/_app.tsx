@@ -7,6 +7,7 @@ import {
   QueryClientProvider,
   useQuery,
 } from "@tanstack/react-query";
+import { Toaster } from "react-hot-toast";
 
 const queryClient = new QueryClient();
 
@@ -16,6 +17,7 @@ export default function App({ Component, pageProps }: AppProps) {
       <QueryClientProvider client={queryClient}>
         <AuthProvider>
           <Component {...pageProps} />
+          <Toaster position="top-center" reverseOrder={false} />
         </AuthProvider>
       </QueryClientProvider>
     </StyledEngineProvider>

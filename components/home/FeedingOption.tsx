@@ -1,9 +1,11 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, { useContext, useState, useEffect, useRef } from "react";
 import { Divider, Avatar, TextField } from "@mui/material";
 import { Sell, PermMedia } from "@mui/icons-material";
 import FeedingModal from "./FeedingModal";
 import { AUTH_CONTEXT, authInfoType } from "@/contexts/AuthProvider";
 import { FormikProps, useFormik } from "formik";
+import useGetAllPosts from "@/hooks/useGetAllPosts";
+import toast from "react-hot-toast/headless";
 
 export interface postFormik {
   postType: string;
@@ -16,6 +18,9 @@ export interface postFormik {
 const FeedingOption = () => {
   const { authUser } = useContext<authInfoType | null>(AUTH_CONTEXT) || {};
   const [lobyStatus, SetLobyStatus] = useState("");
+  const { postRefetch } = useGetAllPosts();
+
+  const modalToggler = useRef<HTMLInputElement | null>(null);
 
   const Formik: FormikProps<postFormik> = useFormik<postFormik>({
     initialValues: {
@@ -61,6 +66,12 @@ const FeedingOption = () => {
         .then((res) => res.json())
         .then((data) => {
           console.log(data);
+          if (data?.success) {
+            toast.success("Your post has been shared");
+            Formik.resetForm();
+            modalToggler.current?.click();
+            postRefetch();
+          }
         });
     },
   });
@@ -111,6 +122,7 @@ const FeedingOption = () => {
         Formik={Formik}
         lobyStatus={lobyStatus}
         SetLobyStatus={SetLobyStatus}
+        modalToggler={modalToggler}
       />
     </div>
   );

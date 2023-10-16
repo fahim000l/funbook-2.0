@@ -43,7 +43,15 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
           as: "authorInfo",
         },
       },
-    ]);
+      {
+        $lookup: {
+          from: "reactions",
+          localField: "_id",
+          foreignField: "postId",
+          as: "reactions",
+        },
+      },
+    ]).sort({ updatedAt: -1 });
 
     return res.status(200).json(allPosts);
   } finally {
