@@ -1,4 +1,4 @@
-import React, { useRef, useState, useContext } from "react";
+import React, { useRef, useState, useContext, LegacyRef } from "react";
 import {
   ThumbUp,
   Comment,
@@ -14,26 +14,21 @@ import { ITag } from "@/db/models/Tag";
 import { IUser } from "@/db/models/User";
 import { IReaction } from "@/db/models/Reaction";
 import useGetAllPosts from "@/hooks/useGetAllPosts";
+import { postType } from "@/pages";
 
 interface props {
-  post: {
-    authorInfo: IUser[];
-    author: string;
-    caption: string;
-    postType: string;
-    medias: IMedia[] | any[];
-    tags: ITag[] | any[];
-    _id: string;
-    reactions: IReaction[] | any[];
-  };
+  post: postType;
+  setCommentingPost: React.Dispatch<React.SetStateAction<postType | null>>;
 }
 
-const PostFooter = ({ post }: props) => {
+const PostFooter = ({ post, setCommentingPost }: props) => {
   const { authUser } = useContext<authInfoType | null>(AUTH_CONTEXT) || {};
   const reactPackage = useRef<HTMLLabelElement | null>(null);
   const [isReacting, setIsReacting] = useState<boolean>(false);
   const isReacted = post.reactions.find((r) => r.user === authUser?.email);
   const { postRefetch } = useGetAllPosts();
+
+  const commentModalRef = React.useRef<HTMLLabelElement | null>(null);
 
   const handleReactPost = (react: string) => {
     fetch("/api/react-post", {
@@ -96,10 +91,12 @@ const PostFooter = ({ post }: props) => {
       {isReacted ? (
         isReacted.react === "like" ? (
           <Button
+            size="small"
             onMouseOver={() => {
               setIsReacting(true);
               reactPackage.current?.click();
             }}
+            className="text-sm"
             onMouseOut={() => setIsReacting(false)}
             fullWidth
             startIcon={<ThumbUp />}
@@ -108,11 +105,12 @@ const PostFooter = ({ post }: props) => {
           </Button>
         ) : isReacted.react === "love" ? (
           <Button
+            size="small"
             onMouseOver={() => {
               setIsReacting(true);
               reactPackage.current?.click();
             }}
-            className="text-[red]"
+            className="text-[red] text-sm"
             onMouseOut={() => setIsReacting(false)}
             fullWidth
             startIcon={<Favorite className="text-[red]" />}
@@ -121,11 +119,12 @@ const PostFooter = ({ post }: props) => {
           </Button>
         ) : isReacted.react === "happy" ? (
           <Button
+            size="small"
             onMouseOver={() => {
               setIsReacting(true);
               reactPackage.current?.click();
             }}
-            className="text-[blue]"
+            className="text-[blue] text-sm"
             onMouseOut={() => setIsReacting(false)}
             fullWidth
             startIcon={<SentimentVerySatisfied className="text-[blue]" />}
@@ -134,11 +133,12 @@ const PostFooter = ({ post }: props) => {
           </Button>
         ) : (
           <Button
+            size="small"
             onMouseOver={() => {
               setIsReacting(true);
               reactPackage.current?.click();
             }}
-            className="text-[blue]"
+            className="text-[blue] text-sm"
             onMouseOut={() => setIsReacting(false)}
             fullWidth
             startIcon={<SentimentVeryDissatisfied className="text-[blue]" />}
@@ -148,11 +148,12 @@ const PostFooter = ({ post }: props) => {
         )
       ) : (
         <Button
+          size="small"
           onMouseOver={() => {
             setIsReacting(true);
             reactPackage.current?.click();
           }}
-          className="text-black"
+          className="text-black text-sm"
           onMouseOut={() => setIsReacting(false)}
           fullWidth
           startIcon={<ThumbUp />}
@@ -161,12 +162,32 @@ const PostFooter = ({ post }: props) => {
         </Button>
       )}
 
-      <Button className="text-black" fullWidth startIcon={<Comment />}>
+      <Button
+        size="small"
+        onClick={() => commentModalRef?.current?.click()}
+        className="text-black text-sm"
+        fullWidth
+        startIcon={<Comment />}
+      >
         Comment
+        {/* {post.comments.length > 0 && `(${post.comments.length})`} */}
       </Button>
-      <Button className="text-black" fullWidth startIcon={<Share />}>
+      <Button
+        size="small"
+        className="text-black text-sm"
+        fullWidth
+        startIcon={<Share />}
+      >
         Share
       </Button>
+      <label
+        onClick={() => setCommentingPost(post)}
+        ref={commentModalRef}
+        htmlFor="commentModal"
+        className="btn hidden"
+      >
+        open modal
+      </label>
     </div>
   );
 };

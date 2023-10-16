@@ -8,10 +8,13 @@ import { IUser } from "@/db/models/User";
 import { IMedia } from "@/db/models/Media";
 import { ITag } from "@/db/models/Tag";
 import { IReaction } from "@/db/models/Reaction";
+import CommentModal from "@/components/home/CommentModal";
+import React from "react";
+import { IComment } from "@/db/models/Comment";
 
 const inter = Inter({ subsets: ["latin"] });
 
-interface postType {
+export interface postType {
   authorInfo: IUser[];
   author: string;
   caption: string;
@@ -20,10 +23,14 @@ interface postType {
   tags: ITag[] | any[];
   _id: string;
   reactions: IReaction[] | any[];
+  comments: IComment[] | any[];
 }
 
 export default function Home() {
   const { posts } = useGetAllPosts();
+  const [commentingPost, setCommentingPost] = React.useState<postType | null>(
+    null
+  );
 
   return (
     <Main>
@@ -31,9 +38,14 @@ export default function Home() {
 
       <div className="flex flex-col">
         {posts?.map((post: postType) => (
-          <PostsCard post={post} key={post?._id} />
+          <PostsCard
+            setCommentingPost={setCommentingPost}
+            post={post}
+            key={post?._id}
+          />
         ))}
       </div>
+      {commentingPost && <CommentModal commentingPost={commentingPost} />}
     </Main>
   );
 }

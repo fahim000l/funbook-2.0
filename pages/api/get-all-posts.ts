@@ -51,6 +51,24 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
           as: "reactions",
         },
       },
+      {
+        $lookup: {
+          from: "comments",
+          localField: "_id",
+          foreignField: "postId",
+          as: "comments",
+          pipeline: [
+            {
+              $lookup: {
+                from: "users",
+                localField: "user",
+                foreignField: "email",
+                as: "authorInfo",
+              },
+            },
+          ],
+        },
+      },
     ]).sort({ updatedAt: -1 });
 
     return res.status(200).json(allPosts);

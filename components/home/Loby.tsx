@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useState, useEffect, useContext } from "react";
 import {
   Avatar,
   Button,
@@ -13,6 +13,7 @@ import { Sell, PermMedia, Cancel } from "@mui/icons-material";
 import { postFormik } from "./FeedingOption";
 import { FormikProps } from "formik";
 import useBase64 from "@/hooks/useBase64";
+import { AUTH_CONTEXT, authInfoType } from "@/contexts/AuthProvider";
 
 interface props {
   SetLobyStatus: React.Dispatch<React.SetStateAction<string>>;
@@ -24,6 +25,7 @@ const Loby = ({ SetLobyStatus, lobyStatus, Formik }: props) => {
   const postMediaInput = useRef<HTMLInputElement | null>(null);
   const [convertingImage, setCOnvertingImage] = useState<File | null>(null);
   const { convertedImage } = useBase64(convertingImage);
+  const { authUser } = useContext<authInfoType | null>(AUTH_CONTEXT) || {};
 
   useEffect(() => {
     if (convertedImage) {
@@ -43,7 +45,7 @@ const Loby = ({ SetLobyStatus, lobyStatus, Formik }: props) => {
         <Avatar />
         <div>
           <h3 className="lg:text-lg text-sm font-bold flex">
-            Md Fahim Faisal
+            {authUser?.userName}
             {Formik.values.tags.length > 0
               ? Formik.values.tags.length === 1
                 ? ` is with ${Formik.values.tags?.[0]?.userName.split(" ")[0]}`

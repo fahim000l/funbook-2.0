@@ -17,21 +17,15 @@ import { Chip, Divider } from "@mui/material";
 import { People, Public } from "@mui/icons-material";
 import PostFooter from "./PostFooter";
 import { IReaction } from "@/db/models/Reaction";
+import CommentModal from "./CommentModal";
+import { postType } from "@/pages";
 
 interface props {
-  post: {
-    authorInfo: IUser[];
-    author: string;
-    caption: string;
-    postType: string;
-    medias: IMedia[] | any[];
-    tags: ITag[] | any[];
-    _id: string;
-    reactions: IReaction[] | any[];
-  };
+  post: postType;
+  setCommentingPost: React.Dispatch<React.SetStateAction<postType | null>>;
 }
 
-export default function PostsCard({ post }: props) {
+export default function PostsCard({ post, setCommentingPost }: props) {
   const { authorInfo, caption, medias, postType } = post;
 
   return (
@@ -66,7 +60,7 @@ export default function PostsCard({ post }: props) {
       <Divider />
       {medias?.length > 0 && <ImageGrid itemData={medias} />}
       <Divider />
-      <PostFooter post={post} />
+      <PostFooter setCommentingPost={setCommentingPost} post={post} />
     </Card>
   );
 }
