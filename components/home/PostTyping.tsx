@@ -1,13 +1,15 @@
 import React from "react";
 import { Divider } from "@mui/material";
 import { Public, People } from "@mui/icons-material";
+import { postFormik } from "./FeedingOption";
+import { FormikProps } from "formik";
 
 interface props {
-  setPostType: React.Dispatch<React.SetStateAction<string>>;
   SetLobyStatus: React.Dispatch<React.SetStateAction<string>>;
+  Formik: FormikProps<postFormik>;
 }
 
-const PostTyping = ({ setPostType, SetLobyStatus }: props) => {
+const PostTyping = ({ SetLobyStatus, Formik }: props) => {
   return (
     <React.Fragment>
       {" "}
@@ -25,7 +27,7 @@ const PostTyping = ({ setPostType, SetLobyStatus }: props) => {
         <div className="flex flex-col space-y-3">
           <button
             onClick={() => {
-              setPostType("public");
+              Formik.initialValues.postType = "public";
               SetLobyStatus("neutral");
             }}
             className="btn"
@@ -35,7 +37,7 @@ const PostTyping = ({ setPostType, SetLobyStatus }: props) => {
           </button>
           <button
             onClick={() => {
-              setPostType("friends");
+              Formik.initialValues.postType = "friends";
               SetLobyStatus("neutral");
             }}
             className="btn"

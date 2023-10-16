@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import {
   Button,
   Divider,
@@ -8,13 +8,21 @@ import {
   Chip,
 } from "@mui/material";
 import { ArrowLeft, Search, Cancel } from "@mui/icons-material";
+import PeopleSelect from "./PeopleSelect";
+import { AUTH_CONTEXT, authInfoType } from "@/contexts/AuthProvider";
+import { FormikProps } from "formik";
+import { postFormik } from "./FeedingOption";
+import TaggingChip from "./TaggingChip";
 
 interface props {
   setTagged: React.Dispatch<React.SetStateAction<never[]>>;
   SetLobyStatus: React.Dispatch<React.SetStateAction<string>>;
+  Formik: FormikProps<postFormik>;
 }
 
-const TaggingView = ({ setTagged, SetLobyStatus }: props) => {
+const TaggingView = ({ setTagged, SetLobyStatus, Formik }: props) => {
+  const { authUser } = useContext<authInfoType | null>(AUTH_CONTEXT) || {};
+
   return (
     <React.Fragment>
       <div className="flex items-center">
@@ -35,20 +43,23 @@ const TaggingView = ({ setTagged, SetLobyStatus }: props) => {
             placeholder="Search for friends"
             size="small"
           />
-          <Button>Done</Button>
+          <Button onClick={() => SetLobyStatus("neutral")}>Done</Button>
         </div>
-        <div className="mt-2">
-          <p className="text-gray-600 font-bold">Tagged</p>
-          <div className="border border-gray-500 border-solid p-2 rounded-lg">
-            <Chip onDelete={() => console.log("delete")} label={"Fahim"} />
+        {Formik.values.tags.length > 0 && (
+          <div className="mt-2">
+            <p className="text-gray-600 font-bold">Tagged</p>
+            <div className="grid grid-cols-3 gap-2 border border-gray-500 border-solid p-2 rounded-lg">
+              {Formik.values.tags.map((user) => (
+                <TaggingChip Formik={Formik} key={user} user={user} />
+              ))}
+            </div>
           </div>
-        </div>
+        )}
         <div className="mt-2">
           <p className="text-gray-600 font-bold">Suggestions</p>
-          <div className="flex items-center space-x-3 rounded-lg hover:bg-base-200 p-2 cursor-pointer">
-            <Avatar />
-            <p>Md Fahim Faisal</p>
-          </div>
+          {authUser?.FriendList?.map((user) => (
+            <PeopleSelect Formik={Formik} key={user} user={user} />
+          ))}
         </div>
       </div>
     </React.Fragment>

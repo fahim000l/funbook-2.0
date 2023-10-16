@@ -14,10 +14,11 @@ import KeyboardArrowDown from "@mui/icons-material/KeyboardArrowDown";
 import Check from "@mui/icons-material/Check";
 
 interface props {
-  lobyStatus: String;
+  lobyStatus: String | undefined;
+  handleChange: (e: any) => void | undefined;
 }
 
-export default function TextArea({ lobyStatus }: props) {
+export default function TextArea({ lobyStatus, handleChange }: props) {
   const [italic, setItalic] = React.useState(false);
   const [fontWeight, setFontWeight] = React.useState("normal");
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -80,8 +81,9 @@ export default function TextArea({ lobyStatus }: props) {
             </IconButton>
           </Box>
         }
+        onChange={handleChange}
         sx={{
-          minWidth: 300,
+          minWidth: 100,
           fontWeight,
           fontStyle: italic ? "italic" : "initial",
         }}

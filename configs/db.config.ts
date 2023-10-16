@@ -1,9 +1,9 @@
-const { MongoClient, ServerApiVersion } = require("mongodb");
+import { MongoClient, ServerApiVersion } from "mongodb";
 import mongoose from "mongoose";
 const uri: string | undefined = process.env.NEXT_PUBLIC_DB_URL;
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
-const client = new MongoClient(uri, {
+const client = new MongoClient(uri as string, {
   serverApi: {
     version: ServerApiVersion.v1,
     strict: true,

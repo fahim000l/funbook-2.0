@@ -25,7 +25,9 @@ const Menu = ({ menuArray }: props) => {
             key={index}
             disablePadding
             className={`font-bold ${
-              pathname.includes(item.path) && "text-white bg-[steelblue]"
+              item.path !== "/"
+                ? pathname.includes(item.path) && "text-white bg-[steelblue]"
+                : item.path === pathname && "text-white bg-[steelblue]"
             }`}
           >
             <ListItemButton>

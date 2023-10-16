@@ -1,63 +1,128 @@
-import React from "react";
-import { Avatar, Chip, Divider, IconButton } from "@mui/material";
-import { People } from "@mui/icons-material";
+import React, { useRef, useState, useEffect } from "react";
+import { Avatar, Button, Chip, Divider, IconButton } from "@mui/material";
+import { People, Public } from "@mui/icons-material";
 import TextArea from "../tools/TextArea";
 import { Sell, PermMedia, Cancel } from "@mui/icons-material";
+import { postFormik } from "./FeedingOption";
+import { FormikProps } from "formik";
+import IsWith from "./IsWith";
+import { ImageGrid } from "react-fb-image-video-grid";
+import useBase64 from "@/hooks/useBase64";
 
 interface props {
   SetLobyStatus: React.Dispatch<React.SetStateAction<string>>;
   lobyStatus: String;
-  postType: String;
+  Formik: FormikProps<postFormik>;
 }
 
-const Loby = ({ SetLobyStatus, lobyStatus, postType }: props) => {
+const Loby = ({ SetLobyStatus, lobyStatus, Formik }: props) => {
+  const postMediaInput = useRef<HTMLInputElement | null>(null);
+  const [convertingImage, setCOnvertingImage] = useState<File | null>(null);
+  const { convertedImage } = useBase64(convertingImage);
+
+  useEffect(() => {
+    if (convertingImage) {
+      console.log(convertingImage);
+    }
+    if (convertedImage) {
+      Formik.setFieldValue("medias", [
+        ...Formik.values.medias,
+        { mediaType: "image", src: convertedImage },
+      ]);
+    }
+  }, [convertedImage, convertingImage]);
+
   return (
     <React.Fragment>
       <p className="font-bold text-center">Create Post</p>
-      <Divider className="my-2" />
+      <Divider className="lg:my-2" />
       <div className="flex items-center space-x-3 mb-2">
         <Avatar />
         <div>
-          <h3 className="text-lg font-bold">Md Fahim Faisal</h3>
+          <h3 className="lg:text-lg text-sm font-bold flex">
+            Md Fahim Faisal
+            {Formik.values.tags.length > 0
+              ? Formik.values.tags.length === 1
+                ? ` is with ${Formik.values.tags?.[0]?.userName.split(" ")[0]}`
+                : Formik.values.tags.length === 2
+                ? ` is with ${
+                    Formik.values.tags?.[0]?.userName.split(" ")[0]
+                  } and
+          ${Formik.values.tags?.[1]?.userName}`
+                : ` is with ${Formik.values.tags?.[0]?.userName.split(" ")[0]},
+          ${Formik.values.tags?.[1]?.userName.split(" ")[0]} and
+          ${Formik.values.tags?.length - 2} others`
+              : ""}
+            {/* <IsWith Formik={Formik} /> */}
+          </h3>
           <div onClick={() => SetLobyStatus("post-typing")}>
             <Chip
-              icon={<People />}
+              icon={
+                Formik.initialValues.postType === "friends" ? (
+                  <People />
+                ) : (
+                  <Public />
+                )
+              }
               size="small"
               className="cursor-pointer"
-              label={postType}
+              label={Formik.initialValues.postType}
             />
           </div>
         </div>
       </div>
       {lobyStatus === "media" ? (
         <div>
-          <TextArea lobyStatus={lobyStatus} />
+          <TextArea
+            handleChange={(e) =>
+              (Formik.initialValues.caption = e.target.value)
+            }
+            lobyStatus={lobyStatus}
+          />
           <div className="p-2 border border-solid border-gray-300 rounded-lg">
             <div className="flex flex-col justify-end items-end text-center bg-base-200 rounded-lg">
-              <IconButton onClick={() => SetLobyStatus("neutral")}>
+              <IconButton size="small" onClick={() => SetLobyStatus("neutral")}>
                 <Cancel />
               </IconButton>
-              <div className="p-5 w-full">
+              <div
+                onClick={() => postMediaInput.current?.click()}
+                className="lg:p-5 w-full cursor-pointer"
+              >
+                <input
+                  onChange={(e) =>
+                    setCOnvertingImage(e?.target?.files?.[0] as File)
+                  }
+                  ref={postMediaInput}
+                  type="file"
+                  name=""
+                  id=""
+                  className="hidden"
+                />
                 <PermMedia />
-                <p className="font-bold">Add Photos/Videos</p>
-                <p>or drag and drop</p>
+                <p className="font-bold text-sm">Add Photos/Videos</p>
+                <p className="text-sm">or drag and drop</p>
               </div>
             </div>
           </div>
         </div>
       ) : (
-        <TextArea lobyStatus={lobyStatus} />
+        <TextArea
+          handleChange={(e) => (Formik.initialValues.caption = e.target.value)}
+          lobyStatus={lobyStatus}
+        />
       )}
       <div className="flex items-center justify-between my-2 p-2 rounded-lg border border-solid border-gray-300">
         <p>Add to your post</p>{" "}
         <div className="flex space-x-3">
           <IconButton
+            size="small"
             onClick={() => SetLobyStatus("tagging")}
             className="bg-blue-300 hover:bg-blue-300 text-blue-700"
           >
             <Sell />
           </IconButton>
           <IconButton
+            size="small"
             onClick={() => SetLobyStatus("media")}
             className="bg-green-300 hover:bg-green-300 text-green-700"
           >
@@ -65,6 +130,15 @@ const Loby = ({ SetLobyStatus, lobyStatus, postType }: props) => {
           </IconButton>
         </div>
       </div>
+      <Button
+        onClick={Formik.handleSubmit as () => void}
+        fullWidth
+        variant="contained"
+        size="small"
+        className="bg-[steelblue] text-white"
+      >
+        Post
+      </Button>
     </React.Fragment>
   );
 };
