@@ -1,12 +1,17 @@
 import React, { useRef, useState, useEffect } from "react";
-import { Avatar, Button, Chip, Divider, IconButton } from "@mui/material";
+import {
+  Avatar,
+  Button,
+  CardMedia,
+  Chip,
+  Divider,
+  IconButton,
+} from "@mui/material";
 import { People, Public } from "@mui/icons-material";
 import TextArea from "../tools/TextArea";
 import { Sell, PermMedia, Cancel } from "@mui/icons-material";
 import { postFormik } from "./FeedingOption";
 import { FormikProps } from "formik";
-import IsWith from "./IsWith";
-import { ImageGrid } from "react-fb-image-video-grid";
 import useBase64 from "@/hooks/useBase64";
 
 interface props {
@@ -21,16 +26,14 @@ const Loby = ({ SetLobyStatus, lobyStatus, Formik }: props) => {
   const { convertedImage } = useBase64(convertingImage);
 
   useEffect(() => {
-    if (convertingImage) {
-      console.log(convertingImage);
-    }
     if (convertedImage) {
       Formik.setFieldValue("medias", [
         ...Formik.values.medias,
-        { mediaType: "image", src: convertedImage },
+        { mediaType: convertingImage?.type, src: convertedImage },
       ]);
+      setCOnvertingImage(null);
     }
-  }, [convertedImage, convertingImage]);
+  }, [convertedImage]);
 
   return (
     <React.Fragment>
@@ -71,6 +74,14 @@ const Loby = ({ SetLobyStatus, lobyStatus, Formik }: props) => {
           </div>
         </div>
       </div>
+      <input
+        onChange={(e) => setCOnvertingImage(e?.target?.files?.[0] as File)}
+        ref={postMediaInput}
+        type="file"
+        name=""
+        id=""
+        className="hidden"
+      />
       {lobyStatus === "media" ? (
         <div>
           <TextArea
@@ -79,31 +90,40 @@ const Loby = ({ SetLobyStatus, lobyStatus, Formik }: props) => {
             }
             lobyStatus={lobyStatus}
           />
-          <div className="p-2 border border-solid border-gray-300 rounded-lg">
-            <div className="flex flex-col justify-end items-end text-center bg-base-200 rounded-lg">
-              <IconButton size="small" onClick={() => SetLobyStatus("neutral")}>
-                <Cancel />
-              </IconButton>
-              <div
-                onClick={() => postMediaInput.current?.click()}
-                className="lg:p-5 w-full cursor-pointer"
-              >
-                <input
-                  onChange={(e) =>
-                    setCOnvertingImage(e?.target?.files?.[0] as File)
-                  }
-                  ref={postMediaInput}
-                  type="file"
-                  name=""
-                  id=""
-                  className="hidden"
-                />
-                <PermMedia />
-                <p className="font-bold text-sm">Add Photos/Videos</p>
-                <p className="text-sm">or drag and drop</p>
+          {Formik.values.medias.length > 0 ? (
+            <div className="grid grid-cols-4">
+              {/* <ImageGrid> */}
+              {Formik.values.medias?.map((media) => {
+                if (media.mediaType?.includes("image")) {
+                  return <img className="w-20 h-20" src={media?.src} alt="" />;
+                } else if (media.mediaType?.includes("video")) {
+                  return (
+                    <video className="w-20 h-20" controls src={media?.src} />
+                  );
+                }
+              })}
+              {/* </ImageGrid> */}
+            </div>
+          ) : (
+            <div className="p-2 border border-solid border-gray-300 rounded-lg">
+              <div className="flex flex-col justify-end items-end text-center bg-base-200 rounded-lg">
+                <IconButton
+                  size="small"
+                  onClick={() => SetLobyStatus("neutral")}
+                >
+                  <Cancel />
+                </IconButton>
+                <div
+                  onClick={() => postMediaInput.current?.click()}
+                  className="lg:p-5 w-full cursor-pointer"
+                >
+                  <PermMedia />
+                  <p className="font-bold text-sm">Add Photos/Videos</p>
+                  <p className="text-sm">or drag and drop</p>
+                </div>
               </div>
             </div>
-          </div>
+          )}
         </div>
       ) : (
         <TextArea
@@ -123,7 +143,15 @@ const Loby = ({ SetLobyStatus, lobyStatus, Formik }: props) => {
           </IconButton>
           <IconButton
             size="small"
-            onClick={() => SetLobyStatus("media")}
+            onClick={() => {
+              if (Formik.values.medias.length > 0) {
+                SetLobyStatus("media");
+                postMediaInput.current?.click();
+                console.log(postMediaInput);
+              } else {
+                SetLobyStatus("media");
+              }
+            }}
             className="bg-green-300 hover:bg-green-300 text-green-700"
           >
             <PermMedia />

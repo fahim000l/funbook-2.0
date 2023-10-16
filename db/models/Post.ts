@@ -9,7 +9,6 @@ interface IPost extends Document {
 const postSchema = new Schema<IPost>(
   {
     caption: {
-      required: true,
       type: String,
     },
     author: {

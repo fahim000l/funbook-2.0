@@ -15,7 +15,7 @@ const PeopleSelect = ({ user, Formik }: props) => {
   return (
     <div
       className={`${
-        Formik.values.tags.some((tg) => tg.email === dbUser?.email)
+        Formik.values.tags.some((tg) => tg.user === dbUser?.email)
           ? "hidden"
           : "block"
       }`}
@@ -24,7 +24,7 @@ const PeopleSelect = ({ user, Formik }: props) => {
         onClick={() => {
           Formik.setFieldValue("tags", [
             ...Formik.values.tags,
-            { email: dbUser?.email, userName: dbUser?.userName },
+            { user: dbUser?.email, userName: dbUser?.userName },
           ]);
         }}
         className="flex items-center space-x-3 rounded-lg hover:bg-base-200 p-2 cursor-pointer"

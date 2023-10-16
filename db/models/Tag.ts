@@ -1,11 +1,11 @@
 import { Document, Schema, model, models } from "mongoose";
 
-export interface ITags extends Document {
+export interface ITag extends Document {
   user: string;
   postId: Schema.Types.ObjectId;
 }
 
-const TagShema = new Schema<ITags>(
+const TagShema = new Schema<ITag>(
   {
     user: {
       required: true,
@@ -19,5 +19,5 @@ const TagShema = new Schema<ITags>(
   { timestamps: true }
 );
 
-const Tag = models.Tag || model<ITags>("Tag", TagShema);
+const Tag = models.Tag || model<ITag>("Tag", TagShema);
 export default Tag;

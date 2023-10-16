@@ -9,38 +9,61 @@ import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
 import { red } from "@mui/material/colors";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
-import { ImageGrid } from "react-fb-image-video-grid";
+import { IMedia } from "@/db/models/Media";
+import { ITag } from "@/db/models/Tag";
+import { IUser } from "@/db/models/User";
+import ImageGrid from "../tools/ImageGrid";
+import { Chip, Divider } from "@mui/material";
+import { People, Public } from "@mui/icons-material";
 
-export default function PostsCard() {
+interface props {
+  post: {
+    authorInfo: IUser[];
+    author: string;
+    caption: string;
+    postType: string;
+    medias: IMedia[] | any[];
+    tags: ITag[] | any[];
+    _id: string;
+  };
+}
+
+export default function PostsCard({ post }: props) {
+  console.log(post);
+
+  const { authorInfo, caption, medias, postType } = post;
+
   return (
-    <Card className="my-5">
-      <CardHeader
-        avatar={
-          <Avatar sx={{ bgcolor: red[500] }} aria-label="recipe">
-            R
-          </Avatar>
-        }
-        action={
-          <IconButton aria-label="settings">
-            <MoreVertIcon />
-          </IconButton>
-        }
-        title="Shrimp and Chorizo Paella"
-        subheader="September 14, 2016"
-      />
+    <Card className="my-5 shadow-lg">
+      <div className="flex space-x-3 justify-start p-2">
+        <Avatar
+          src={authorInfo?.[0]?.profilePic}
+          sx={{ bgcolor: red[500] }}
+          aria-label="recipe"
+        >
+          R
+        </Avatar>
+        <div>
+          <div className="flex space-x-1 items-center">
+            <p>{authorInfo?.[0]?.userName}</p>
+          </div>
+          <div className="text-sm">
+            16, October , 2023 .{" "}
+            <Chip
+              size="small"
+              label={postType === "friends" ? <People /> : <Public />}
+            />
+          </div>
+        </div>
+      </div>
       <CardContent>
         <Typography variant="body2" color="text.secondary">
-          Card Caption
+          {caption}
         </Typography>
       </CardContent>
-      <ImageGrid>
-        <CardMedia
-          component="img"
-          height="194"
-          image="/static/images/cards/paella.jpg"
-          alt="Paella dish"
-        />
-      </ImageGrid>
+      {/* <ImageGrid> */}
+      <Divider />
+      {medias?.length > 0 && <ImageGrid itemData={medias} />}
     </Card>
   );
 }

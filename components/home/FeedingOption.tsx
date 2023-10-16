@@ -4,13 +4,11 @@ import { Sell, PermMedia } from "@mui/icons-material";
 import FeedingModal from "./FeedingModal";
 import { AUTH_CONTEXT, authInfoType } from "@/contexts/AuthProvider";
 import { FormikProps, useFormik } from "formik";
-import { IMedia } from "@/db/models/Media";
-import { ITags } from "@/db/models/Tags";
 
 export interface postFormik {
   postType: string;
   medias: { mediaType: string; src: string }[] | any[];
-  tags: { email: string; userName: string }[] | any[];
+  tags: { user: string; userName: string }[] | any[];
   caption: string;
   author: string;
 }
@@ -29,6 +27,41 @@ const FeedingOption = () => {
     },
     onSubmit: (values) => {
       console.log(values);
+
+      const postData = {
+        author: values.author,
+        postType: values.postType,
+        caption: values.caption,
+      };
+
+      const tagData: { user: string; postId: undefined }[] = [];
+
+      values.tags.forEach((tg) => {
+        tagData.push({ user: tg.user, postId: undefined });
+      });
+
+      const mediaData: { mediaType: string; postId: undefined; src: string }[] =
+        [];
+
+      values.medias.forEach((media) => {
+        mediaData.push({
+          mediaType: media.mediaType,
+          postId: undefined,
+          src: media.src,
+        });
+      });
+
+      fetch(`/api/store-post`, {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+        },
+        body: JSON.stringify({ postData, mediaData, tagData }),
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          console.log(data);
+        });
     },
   });
 
