@@ -10,7 +10,7 @@ const CommentBox = ({ post }: props) => {
   const { comments } = post;
 
   return (
-    <div>
+    <div className="max-h-52 overflow-y-scroll">
       {comments?.map((comment) => (
         <CommentChatBubble comment={comment} key={comment?._id} />
       ))}

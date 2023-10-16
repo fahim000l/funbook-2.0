@@ -19,6 +19,7 @@ import PostFooter from "./PostFooter";
 import { IReaction } from "@/db/models/Reaction";
 import CommentModal from "./CommentModal";
 import { postType } from "@/pages";
+import CommentBox from "./CommentBox";
 
 interface props {
   post: postType;
@@ -58,9 +59,18 @@ export default function PostsCard({ post, setCommentingPost }: props) {
       </CardContent>
       {/* <ImageGrid> */}
       <Divider />
-      {medias?.length > 0 && <ImageGrid itemData={medias} />}
+      {medias?.length === 1 && (
+        <img className="w-full h-40 lg:h-96" src={medias[0].src} alt="" />
+      )}
+      {medias?.length > 1 && <ImageGrid itemData={medias} />}
       <Divider />
       <PostFooter setCommentingPost={setCommentingPost} post={post} />
+      <Divider />
+      {post?.comments?.length > 0 && (
+        <div className="p-2 border-2 border-t-0 border-gray-500 border-solid">
+          <CommentBox post={post} />
+        </div>
+      )}
     </Card>
   );
 }

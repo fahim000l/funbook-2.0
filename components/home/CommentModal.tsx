@@ -1,5 +1,5 @@
 import { Avatar, Divider, IconButton, TextField } from "@mui/material";
-import React, { useContext, useState } from "react";
+import React, { useContext, useRef, useState } from "react";
 import { Send } from "@mui/icons-material";
 import { AUTH_CONTEXT, authInfoType } from "@/contexts/AuthProvider";
 import TextArea from "../tools/TextArea";
@@ -20,6 +20,7 @@ const CommentModal = ({ commentingPost }: props) => {
   const { authUser } = useContext<authInfoType | null>(AUTH_CONTEXT) || {};
   const [text, setText] = useState<string>("");
   const { postRefetch } = useGetAllPosts();
+  const modalToggler = useRef<HTMLInputElement | null>(null);
 
   const handleSendComment = () => {
     fetch("/api/comment-post", {
@@ -39,13 +40,19 @@ const CommentModal = ({ commentingPost }: props) => {
         if (data?.success) {
           postRefetch();
           setText("");
+          modalToggler.current?.click();
         }
       });
   };
 
   return (
     <div className="z-[1000]">
-      <input type="checkbox" id="commentModal" className="modal-toggle" />
+      <input
+        ref={modalToggler}
+        type="checkbox"
+        id="commentModal"
+        className="modal-toggle"
+      />
       <div className="modal lg:modal-middle modal-bottom z-[1000]">
         <div className="modal-box flex lg:flex-col flex-col-reverse p-2 z-[1000]">
           <div className="flex items-center space-x-3 w-full">

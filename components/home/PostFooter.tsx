@@ -96,12 +96,12 @@ const PostFooter = ({ post, setCommentingPost }: props) => {
               setIsReacting(true);
               reactPackage.current?.click();
             }}
-            className="text-sm"
             onMouseOut={() => setIsReacting(false)}
+            className="text-sm"
             fullWidth
             startIcon={<ThumbUp />}
           >
-            Like
+            <span className="hidden lg:inline">Like</span>
           </Button>
         ) : isReacted.react === "love" ? (
           <Button
@@ -115,7 +115,7 @@ const PostFooter = ({ post, setCommentingPost }: props) => {
             fullWidth
             startIcon={<Favorite className="text-[red]" />}
           >
-            Love
+            <span className="hidden lg:inline">Love</span>
           </Button>
         ) : isReacted.react === "happy" ? (
           <Button
@@ -129,7 +129,7 @@ const PostFooter = ({ post, setCommentingPost }: props) => {
             fullWidth
             startIcon={<SentimentVerySatisfied className="text-[blue]" />}
           >
-            Happy
+            <span className="hidden lg:inline">Happy</span>
           </Button>
         ) : (
           <Button
@@ -143,7 +143,7 @@ const PostFooter = ({ post, setCommentingPost }: props) => {
             fullWidth
             startIcon={<SentimentVeryDissatisfied className="text-[blue]" />}
           >
-            Sad
+            <span className="hidden lg:inline">Sad</span>
           </Button>
         )
       ) : (
@@ -158,7 +158,7 @@ const PostFooter = ({ post, setCommentingPost }: props) => {
           fullWidth
           startIcon={<ThumbUp />}
         >
-          Like
+          <span className="hidden lg:inline">Like</span>
         </Button>
       )}
 
@@ -169,8 +169,8 @@ const PostFooter = ({ post, setCommentingPost }: props) => {
         fullWidth
         startIcon={<Comment />}
       >
-        Comment
-        {/* {post.comments.length > 0 && `(${post.comments.length})`} */}
+        <span className="hidden lg:inline">Comment</span>
+        <span>{post.comments.length > 0 && `(${post.comments.length})`}</span>
       </Button>
       <Button
         size="small"
@@ -178,7 +178,7 @@ const PostFooter = ({ post, setCommentingPost }: props) => {
         fullWidth
         startIcon={<Share />}
       >
-        Share
+        <span className="hidden lg:inline">Comment</span>
       </Button>
       <label
         onClick={() => setCommentingPost(post)}
