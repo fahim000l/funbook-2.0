@@ -106,7 +106,11 @@ export default function PostsCard({
       <Divider />
       {post?.comments?.length > 0 && (
         <div className="p-2 border-2 border-t-0 border-gray-500 border-solid">
-          <CommentBox modalToggler={null} post={post} />
+          <CommentBox
+            setCommentingPost={setCommentingPost}
+            modalToggler={null}
+            post={post}
+          />
         </div>
       )}
     </Card>

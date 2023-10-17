@@ -1,6 +1,6 @@
 import { AUTH_CONTEXT, authInfoType } from "@/contexts/AuthProvider";
 import useGetAllPosts from "@/hooks/useGetAllPosts";
-import { replyType } from "@/pages";
+import { postType, replyType } from "@/pages";
 import {
   Favorite,
   Message,
@@ -17,9 +17,15 @@ interface props {
   reply: replyType;
   modalToggler: LegacyRef<HTMLInputElement | null>;
   commentId: string;
+  setCommentingPost: React.Dispatch<React.SetStateAction<postType | null>>;
 }
 
-const ReplyChatBubble = ({ reply, modalToggler, commentId }: props) => {
+const ReplyChatBubble = ({
+  reply,
+  modalToggler,
+  commentId,
+  setCommentingPost,
+}: props) => {
   const {
     _id,
     reactions,
@@ -77,9 +83,7 @@ const ReplyChatBubble = ({ reply, modalToggler, commentId }: props) => {
           postRefetch();
           setReplyText("");
           setReplying(false);
-          if (modalToggler) {
-            modalToggler?.current?.click();
-          }
+          setCommentingPost(null);
         }
       });
   };

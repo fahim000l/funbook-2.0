@@ -16,15 +16,20 @@ import { Schema } from "mongoose";
 import React, { useState, useRef, useContext, LegacyRef } from "react";
 import TextArea from "../tools/TextArea";
 import { Textarea } from "@mui/joy";
-import { commentType, replyType } from "@/pages";
+import { commentType, postType, replyType } from "@/pages";
 import ReplyChatBubble from "./ReplyChatBubble";
 
 interface props {
   comment: commentType;
   modalToggler: LegacyRef<HTMLInputElement | null>;
+  setCommentingPost: React.Dispatch<React.SetStateAction<postType | null>>;
 }
 
-const CommentChatBubble = ({ comment, modalToggler }: props) => {
+const CommentChatBubble = ({
+  comment,
+  modalToggler,
+  setCommentingPost,
+}: props) => {
   const {
     text,
     reactions,
@@ -84,9 +89,7 @@ const CommentChatBubble = ({ comment, modalToggler }: props) => {
           setReplyText("");
           setReplying(false);
           setShowReplys(true);
-          if (modalToggler) {
-            modalToggler?.current?.click();
-          }
+          setCommentingPost(null);
         }
       });
   };
@@ -259,6 +262,7 @@ const CommentChatBubble = ({ comment, modalToggler }: props) => {
               modalToggler={modalToggler}
               reply={reply}
               key={reply?._id}
+              setCommentingPost={setCommentingPost}
             />
           ))}
         </div>
