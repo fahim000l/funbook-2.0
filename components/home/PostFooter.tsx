@@ -19,9 +19,16 @@ import { postType } from "@/pages";
 interface props {
   post: postType;
   setCommentingPost: React.Dispatch<React.SetStateAction<postType | null>>;
+  setSharingPost: React.Dispatch<React.SetStateAction<postType | null>>;
+  setSharing: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const PostFooter = ({ post, setCommentingPost }: props) => {
+const PostFooter = ({
+  post,
+  setCommentingPost,
+  setSharing,
+  setSharingPost,
+}: props) => {
   const { authUser } = useContext<authInfoType | null>(AUTH_CONTEXT) || {};
   const reactPackage = useRef<HTMLLabelElement | null>(null);
   const [isReacting, setIsReacting] = useState<boolean>(false);
@@ -29,6 +36,8 @@ const PostFooter = ({ post, setCommentingPost }: props) => {
   const { postRefetch } = useGetAllPosts();
 
   const commentModalRef = React.useRef<HTMLLabelElement | null>(null);
+
+  console.log(post?.sharedPostId, post?._id);
 
   const handleReactPost = (react: string) => {
     fetch("/api/react-post", {
@@ -173,6 +182,10 @@ const PostFooter = ({ post, setCommentingPost }: props) => {
         <span>{post.comments.length > 0 && `(${post.comments.length})`}</span>
       </Button>
       <Button
+        onClick={() => {
+          setSharing(true);
+          setSharingPost(post);
+        }}
         size="small"
         className="text-black text-sm"
         fullWidth
@@ -181,7 +194,9 @@ const PostFooter = ({ post, setCommentingPost }: props) => {
         <span className="hidden lg:inline">Share</span>
       </Button>
       <label
-        onClick={() => setCommentingPost(post)}
+        onClick={() => {
+          setCommentingPost(post);
+        }}
         ref={commentModalRef}
         htmlFor="commentModal"
         className="btn hidden"

@@ -53,6 +53,110 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
       },
       {
         $lookup: {
+          from: "posts",
+          localField: "sharedPostId",
+          foreignField: "_id",
+          as: "sharedPost",
+          pipeline: [
+            {
+              $lookup: {
+                from: "tags",
+                localField: "_id",
+                foreignField: "postId",
+                as: "tags",
+                pipeline: [
+                  {
+                    $lookup: {
+                      from: "users",
+                      localField: "user",
+                      foreignField: "email",
+                      as: "user",
+                    },
+                  },
+                ],
+              },
+            },
+            {
+              $lookup: {
+                from: "media",
+                localField: "_id",
+                foreignField: "postId",
+                as: "medias",
+              },
+            },
+            {
+              $lookup: {
+                from: "users",
+                localField: "author",
+                foreignField: "email",
+                as: "authorInfo",
+              },
+            },
+            {
+              $lookup: {
+                from: "reactions",
+                localField: "_id",
+                foreignField: "postId",
+                as: "reactions",
+              },
+            },
+            {
+              $lookup: {
+                from: "comments",
+                localField: "_id",
+                foreignField: "postId",
+                as: "comments",
+                pipeline: [
+                  {
+                    $lookup: {
+                      from: "users",
+                      localField: "user",
+                      foreignField: "email",
+                      as: "authorInfo",
+                    },
+                  },
+                  {
+                    $lookup: {
+                      from: "reactions",
+                      localField: "_id",
+                      foreignField: "postId",
+                      as: "reactions",
+                    },
+                  },
+                  {
+                    $lookup: {
+                      from: "comments",
+                      localField: "_id",
+                      foreignField: "postId",
+                      as: "replys",
+                      pipeline: [
+                        {
+                          $lookup: {
+                            from: "users",
+                            localField: "user",
+                            foreignField: "email",
+                            as: "authorInfo",
+                          },
+                        },
+                        {
+                          $lookup: {
+                            from: "reactions",
+                            localField: "_id",
+                            foreignField: "postId",
+                            as: "reactions",
+                          },
+                        },
+                      ],
+                    },
+                  },
+                ],
+              },
+            },
+          ],
+        },
+      },
+      {
+        $lookup: {
           from: "comments",
           localField: "_id",
           foreignField: "postId",

@@ -36,7 +36,6 @@ const ReplyChatBubble = ({ reply, modalToggler, commentId }: props) => {
   const isReacted = reactions.find((r) => r.user === authUser?.email);
   const [replying, setReplying] = useState<boolean>(false);
   const [replyText, setReplyText] = useState<string>("");
-  console.log(reply);
 
   const handleReactPost = (react: string) => {
     fetch("/api/react-post", {
@@ -94,7 +93,7 @@ const ReplyChatBubble = ({ reply, modalToggler, commentId }: props) => {
           </div>
         </div>
         <div className="chat-header">{userName}</div>
-        <div className="chat-bubble w-full mr-0 pr-0">
+        <div className="chat-bubble chat-bubble-primary w-full mr-0 pr-0">
           {" "}
           <span>{text}</span>{" "}
         </div>

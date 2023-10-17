@@ -18,25 +18,15 @@ import { People, Public } from "@mui/icons-material";
 import PostFooter from "./PostFooter";
 import { IReaction } from "@/db/models/Reaction";
 import CommentModal from "./CommentModal";
-import { postType } from "@/pages";
+import { postType, shareType } from "@/pages";
 import CommentBox from "./CommentBox";
-import ShareCard from "./ShareCard";
 
 interface props {
-  post: postType;
-  setCommentingPost: React.Dispatch<React.SetStateAction<postType | null>>;
-  setSharingPost: React.Dispatch<React.SetStateAction<postType | null>>;
-  setSharing: React.Dispatch<React.SetStateAction<boolean>>;
+  post: shareType;
 }
 
-export default function PostsCard({
-  post,
-  setCommentingPost,
-  setSharing,
-  setSharingPost,
-}: props) {
-  const { authorInfo, caption, medias, postType, sharedPost } = post;
-  console.log(sharedPost);
+export default function ShareCard({ post }: props) {
+  const { authorInfo, caption, medias, postType } = post;
 
   return (
     <Card className="my-5 shadow-lg">
@@ -61,41 +51,20 @@ export default function PostsCard({
           </div>
         </div>
       </div>
-      <CardContent>
-        <Typography variant="body2" color="text.secondary">
-          {caption}
-        </Typography>
-      </CardContent>
-      {sharedPost?.length > 0 ? (
-        <div className="border border-solid border-gray-500 m-5">
-          {sharedPost?.map((post) => (
-            <ShareCard post={post} key={post?._id} />
-          ))}
-        </div>
-      ) : (
-        <div>
-          {/* <ImageGrid> */}
-          <Divider />
-          {medias?.length === 1 && (
-            <img className="w-full h-40 lg:h-96" src={medias[0].src} alt="" />
-          )}
-          {medias?.length > 1 && <ImageGrid itemData={medias} />}
-        </div>
-      )}
-
+      <div>
+        <CardContent>
+          <Typography variant="body2" color="text.secondary">
+            {caption}
+          </Typography>
+        </CardContent>
+        {/* <ImageGrid> */}
+        <Divider />
+        {medias?.length === 1 && (
+          <img className="w-full h-40 lg:h-96" src={medias[0].src} alt="" />
+        )}
+        {medias?.length > 1 && <ImageGrid itemData={medias} />}
+      </div>
       <Divider />
-      <PostFooter
-        setSharing={setSharing}
-        setSharingPost={setSharingPost}
-        setCommentingPost={setCommentingPost}
-        post={post}
-      />
-      <Divider />
-      {post?.comments?.length > 0 && (
-        <div className="p-2 border-2 border-t-0 border-gray-500 border-solid">
-          <CommentBox modalToggler={null} post={post} />
-        </div>
-      )}
     </Card>
   );
 }

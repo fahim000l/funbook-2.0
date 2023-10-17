@@ -41,7 +41,7 @@ const CommentChatBubble = ({ comment, modalToggler }: props) => {
   const isReacted = reactions.find((r) => r.user === authUser?.email);
   const [replying, setReplying] = useState<boolean>(false);
   const [replyText, setReplyText] = useState<string>("");
-  console.log(replys);
+  const [showReplys, setShowReplys] = useState<boolean>(false);
 
   const handleReactPost = (react: string) => {
     fetch("/api/react-post", {
@@ -83,6 +83,7 @@ const CommentChatBubble = ({ comment, modalToggler }: props) => {
           postRefetch();
           setReplyText("");
           setReplying(false);
+          setShowReplys(true);
           if (modalToggler) {
             modalToggler?.current?.click();
           }
@@ -218,11 +219,13 @@ const CommentChatBubble = ({ comment, modalToggler }: props) => {
             />
           )}
           {replys?.length > 0 && (
-            <Chip
-              className="cursor-pointer mx-2"
-              label={reactions?.length}
-              icon={<Message />}
-            />
+            <div onClick={() => setShowReplys(!showReplys)}>
+              <Chip
+                className="cursor-pointer mx-2"
+                label={reactions?.length}
+                icon={<Message />}
+              />
+            </div>
           )}
         </div>
       </div>
@@ -248,8 +251,8 @@ const CommentChatBubble = ({ comment, modalToggler }: props) => {
         </div>
       )}
 
-      {replys?.length > 0 && (
-        <div className="lg:w-[70%] mx-auto">
+      {showReplys && (
+        <div className="lg:w-[70%] w-[90%] mx-auto">
           {replys?.map((reply: replyType) => (
             <ReplyChatBubble
               commentId={_id}
