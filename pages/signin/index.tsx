@@ -38,7 +38,21 @@ const SignIn = () => {
   useEffect(() => {
     if (userStored) {
       console.log(userStored);
-      push("/");
+      if (userStored) {
+        fetch("/api/sign-jwt", {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({ email: storingUser?.email }),
+        })
+          .then((res) => res.json())
+          .then((data) => {
+            console.log(data);
+            if (data?.success) {
+              SetStoringUser(null);
+              push("/");
+            }
+          });
+      }
     }
   }, [userStored]);
 
@@ -92,7 +106,21 @@ const SignIn = () => {
         signIn(values.email, values.password)
           .then(({ user }) => {
             console.log(user);
-            push("/");
+            if (user?.email) {
+              fetch("/api/sign-jwt", {
+                method: "POST",
+                headers: { "content-type": "application/json" },
+                body: JSON.stringify({ email: user?.email }),
+              })
+                .then((res) => res.json())
+                .then((data) => {
+                  console.log(data);
+                  if (data?.success) {
+                    SetStoringUser(null);
+                    push("/");
+                  }
+                });
+            }
           })
           .catch((err) => {
             console.error(err);

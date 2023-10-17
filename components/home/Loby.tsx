@@ -14,6 +14,7 @@ import { postFormik } from "./FeedingOption";
 import { FormikProps } from "formik";
 import useBase64 from "@/hooks/useBase64";
 import { AUTH_CONTEXT, authInfoType } from "@/contexts/AuthProvider";
+import { Textarea } from "@mui/joy";
 
 interface props {
   SetLobyStatus: React.Dispatch<React.SetStateAction<string>>;
@@ -86,9 +87,10 @@ const Loby = ({ SetLobyStatus, lobyStatus, Formik }: props) => {
       />
       {lobyStatus === "media" ? (
         <div>
-          <TextArea
-            handleChange={(e) => (Formik.values.caption = e.target.value)}
-            lobyStatus={lobyStatus}
+          <Textarea
+            placeholder="Type Something"
+            value={Formik.values.caption}
+            onChange={(e) => Formik.setFieldValue("caption", e.target.value)}
           />
           {Formik.values.medias.length > 0 ? (
             <div className="grid grid-cols-4">
@@ -126,9 +128,10 @@ const Loby = ({ SetLobyStatus, lobyStatus, Formik }: props) => {
           )}
         </div>
       ) : (
-        <TextArea
-          handleChange={(e) => (Formik.values.caption = e.target.value)}
-          lobyStatus={lobyStatus}
+        <Textarea
+          placeholder="Type Something"
+          value={Formik.values.caption}
+          onChange={(e) => Formik.setFieldValue("caption", e.target.value)}
         />
       )}
       <div className="flex items-center justify-between my-2 p-2 rounded-lg border border-solid border-gray-300">
@@ -159,6 +162,9 @@ const Loby = ({ SetLobyStatus, lobyStatus, Formik }: props) => {
         </div>
       </div>
       <Button
+        disabled={
+          Formik.values.caption === "" || Formik.values.medias.length === 0
+        }
         onClick={Formik.handleSubmit as () => void}
         fullWidth
         variant="contained"

@@ -19,6 +19,7 @@ import {
   RefetchOptions,
   RefetchQueryFilters,
 } from "@tanstack/react-query";
+import { useRouter } from "next/router";
 
 interface props {
   children: React.ReactNode;
@@ -44,6 +45,7 @@ export const AUTH_CONTEXT = createContext<authInfoType | null>(null);
 
 const AuthProvider = ({ children }: props) => {
   const [sessionUser, setSessionUser] = useState<User | null>(null);
+  const { push } = useRouter();
   const {
     dbUser: authUser,
     dbUserLoading,
@@ -68,6 +70,7 @@ const AuthProvider = ({ children }: props) => {
         .then((data) => {
           if (data?.success) {
             setSessionUser(null);
+            push("/signin");
           }
         });
     });
@@ -75,20 +78,7 @@ const AuthProvider = ({ children }: props) => {
 
   useEffect(() => {
     const unsubscribed = onAuthStateChanged(auth, (user) => {
-      if (!authUser) {
-        fetch("/api/sign-jwt", {
-          method: "POST",
-          headers: { "content-type": "application/json" },
-          body: JSON.stringify({ email: user?.email }),
-        })
-          .then((res) => res.json())
-          .then((data) => {
-            console.log(data);
-            if (data?.success) {
-              setSessionUser(user);
-            }
-          });
-      }
+      setSessionUser(user);
     });
 
     return () => unsubscribed();

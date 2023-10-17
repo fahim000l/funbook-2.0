@@ -1,6 +1,8 @@
 import { connectMongo } from "@/configs/db.config";
 import User from "@/db/models/User";
 import type { NextApiRequest, NextApiResponse } from "next";
+import JWT from "jsonwebtoken";
+import { serialize } from "cookie";
 
 export default async function (req: NextApiRequest, res: NextApiResponse) {
   try {
@@ -18,6 +20,23 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
 
         if (!foundUser) {
           const result = await User.create(body);
+
+          const token = JWT.sign(
+            { email: body?.email },
+            process.env.NEXT_PUBLIC_JWT_SECRET as string,
+            {
+              expiresIn: "1d",
+            }
+          );
+
+          res.setHeader(
+            "Set-Cookie",
+            serialize("fun_book_token", token, {
+              httpOnly: true,
+              path: "/",
+            })
+          );
+
           return res.status(200).json({ success: true, result });
         } else {
           return res

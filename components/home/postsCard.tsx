@@ -21,6 +21,7 @@ import CommentModal from "./CommentModal";
 import { postType } from "@/pages";
 import CommentBox from "./CommentBox";
 import ShareCard from "./ShareCard";
+import { AUTH_CONTEXT, authInfoType } from "@/contexts/AuthProvider";
 
 interface props {
   post: postType;
@@ -36,17 +37,29 @@ export default function PostsCard({
   setSharingPost,
 }: props) {
   const { authorInfo, caption, medias, postType, sharedPost } = post;
+  const { authUser } =
+    React.useContext<authInfoType | null>(AUTH_CONTEXT) || {};
   console.log(sharedPost);
 
   return (
-    <Card className="my-5 shadow-lg">
+    <Card
+      className={`my-5 shadow-lg ${
+        authUser?.email !== authorInfo?.[0]?.email
+          ? postType === "friends"
+            ? !authUser?.FriendList?.includes(authorInfo?.[0]?.email)
+              ? "hidden"
+              : "inline"
+            : "inline"
+          : "inline"
+      }`}
+    >
       <div className="flex space-x-3 justify-start p-2">
         <Avatar
           src={authorInfo?.[0]?.profilePic}
           sx={{ bgcolor: red[500] }}
           aria-label="recipe"
         >
-          {authorInfo[0]?.userName[0]}
+          {authorInfo?.[0]?.userName[0]}
         </Avatar>
         <div>
           <div className="flex space-x-1 items-center">

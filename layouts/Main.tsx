@@ -46,16 +46,16 @@ export default function Main(props: Props) {
       text: "News Feed",
       path: "/",
     },
-    {
-      icon: <Message />,
-      text: "Messages",
-      path: "/messages",
-    },
-    {
-      icon: <Notifications />,
-      text: "Notifications",
-      path: "/notifications",
-    },
+    // {
+    //   icon: <Message />,
+    //   text: "Messages",
+    //   path: "/messages",
+    // },
+    // {
+    //   icon: <Notifications />,
+    //   text: "Notifications",
+    //   path: "/notifications",
+    // },
   ];
 
   const socialOptions = [

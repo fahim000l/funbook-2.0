@@ -57,9 +57,15 @@ const TaggingView = ({ setTagged, SetLobyStatus, Formik }: props) => {
         )}
         <div className="mt-2">
           <p className="text-gray-600 font-bold">Suggestions</p>
-          {authUser?.FriendList?.map((user) => (
-            <PeopleSelect Formik={Formik} key={user} user={user} />
-          ))}
+          {authUser?.FriendList?.length === 0 ? (
+            <div className="flex items-center justify-center text-[red] font-bold">
+              You have no frind to tag
+            </div>
+          ) : (
+            authUser?.FriendList?.map((user) => (
+              <PeopleSelect Formik={Formik} key={user} user={user} />
+            ))
+          )}
         </div>
       </div>
     </React.Fragment>

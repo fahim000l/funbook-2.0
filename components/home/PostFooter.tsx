@@ -32,7 +32,7 @@ const PostFooter = ({
   const { authUser } = useContext<authInfoType | null>(AUTH_CONTEXT) || {};
   const reactPackage = useRef<HTMLLabelElement | null>(null);
   const [isReacting, setIsReacting] = useState<boolean>(false);
-  const isReacted = post.reactions.find((r) => r.user === authUser?.email);
+  const isReacted = post?.reactions?.find((r) => r.user === authUser?.email);
   const { postRefetch } = useGetAllPosts();
 
   const commentModalRef = React.useRef<HTMLLabelElement | null>(null);
@@ -179,7 +179,9 @@ const PostFooter = ({
         startIcon={<Comment />}
       >
         <span className="hidden lg:inline">Comment</span>
-        <span>{post.comments.length > 0 && `(${post.comments.length})`}</span>
+        <span>
+          {post?.comments?.length > 0 && `(${post?.comments?.length})`}
+        </span>
       </Button>
       <Button
         onClick={() => {
