@@ -11,8 +11,28 @@ import { IReaction } from "@/db/models/Reaction";
 import CommentModal from "@/components/home/CommentModal";
 import React from "react";
 import { IComment } from "@/db/models/Comment";
+import { Schema } from "mongoose";
 
 const inter = Inter({ subsets: ["latin"] });
+
+export interface replyType {
+  _id: string;
+  text: string;
+  user: string;
+  postId: Schema.Types.ObjectId;
+  authorInfo: IUser[];
+  reactions: IReaction[];
+}
+
+export interface commentType {
+  _id: string;
+  text: string;
+  user: string;
+  postId: Schema.Types.ObjectId;
+  authorInfo: IUser[];
+  reactions: IReaction[];
+  replys: replyType[];
+}
 
 export interface postType {
   authorInfo: IUser[];
@@ -23,7 +43,7 @@ export interface postType {
   tags: ITag[] | any[];
   _id: string;
   reactions: IReaction[] | any[];
-  comments: IComment[] | any[];
+  comments: commentType;
 }
 
 export default function Home() {

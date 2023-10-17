@@ -66,6 +66,40 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
                 as: "authorInfo",
               },
             },
+            {
+              $lookup: {
+                from: "reactions",
+                localField: "_id",
+                foreignField: "postId",
+                as: "reactions",
+              },
+            },
+            {
+              $lookup: {
+                from: "comments",
+                localField: "_id",
+                foreignField: "postId",
+                as: "replys",
+                pipeline: [
+                  {
+                    $lookup: {
+                      from: "users",
+                      localField: "user",
+                      foreignField: "email",
+                      as: "authorInfo",
+                    },
+                  },
+                  {
+                    $lookup: {
+                      from: "reactions",
+                      localField: "_id",
+                      foreignField: "postId",
+                      as: "reactions",
+                    },
+                  },
+                ],
+              },
+            },
           ],
         },
       },

@@ -4,6 +4,7 @@ export interface IPost extends Document {
   postType: string;
   author: string;
   caption: string;
+  sharedPostId: Schema.Types.ObjectId;
 }
 
 const postSchema = new Schema<IPost>(
@@ -18,6 +19,9 @@ const postSchema = new Schema<IPost>(
     postType: {
       required: true,
       type: String,
+    },
+    sharedPostId: {
+      type: Schema.ObjectId,
     },
   },
   { timestamps: true }

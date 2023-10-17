@@ -1,39 +1,34 @@
 import { AUTH_CONTEXT, authInfoType } from "@/contexts/AuthProvider";
-import { IComment } from "@/db/models/Comment";
-import { IReaction } from "@/db/models/Reaction";
-import { IUser } from "@/db/models/User";
 import useGetAllPosts from "@/hooks/useGetAllPosts";
+import { replyType } from "@/pages";
 import {
   Favorite,
-  Send,
   Message,
+  Send,
   SentimentVeryDissatisfied,
   SentimentVerySatisfied,
   ThumbUp,
 } from "@mui/icons-material";
-import { Avatar, Button, Chip, IconButton } from "@mui/material";
-import { Schema } from "mongoose";
-import React, { useState, useRef, useContext, LegacyRef } from "react";
-import TextArea from "../tools/TextArea";
 import { Textarea } from "@mui/joy";
-import { commentType, replyType } from "@/pages";
-import ReplyChatBubble from "./ReplyChatBubble";
+import { Avatar, Button, Chip, IconButton } from "@mui/material";
+import React, { LegacyRef, useContext, useRef, useState } from "react";
 
 interface props {
-  comment: commentType;
+  reply: replyType;
   modalToggler: LegacyRef<HTMLInputElement | null>;
+  commentId: string;
 }
 
-const CommentChatBubble = ({ comment, modalToggler }: props) => {
+const ReplyChatBubble = ({ reply, modalToggler, commentId }: props) => {
   const {
-    text,
+    _id,
     reactions,
+    text,
     authorInfo: {
       [0]: { profilePic, userName },
     },
-    replys,
-    _id,
-  } = comment;
+  } = reply;
+
   const { authUser } = useContext<authInfoType | null>(AUTH_CONTEXT) || {};
   const [isReacting, setIsReacting] = useState<boolean>(false);
   const reactPackage = useRef<HTMLLabelElement | null>(null);
@@ -41,7 +36,7 @@ const CommentChatBubble = ({ comment, modalToggler }: props) => {
   const isReacted = reactions.find((r) => r.user === authUser?.email);
   const [replying, setReplying] = useState<boolean>(false);
   const [replyText, setReplyText] = useState<string>("");
-  console.log(replys);
+  console.log(reply);
 
   const handleReactPost = (react: string) => {
     fetch("/api/react-post", {
@@ -73,7 +68,7 @@ const CommentChatBubble = ({ comment, modalToggler }: props) => {
       body: JSON.stringify({
         user: authUser?.email,
         text: replyText,
-        postId: _id,
+        postId: commentId,
       }),
     })
       .then((res) => res.json())
@@ -217,13 +212,6 @@ const CommentChatBubble = ({ comment, modalToggler }: props) => {
               icon={<SentimentVerySatisfied />}
             />
           )}
-          {replys?.length > 0 && (
-            <Chip
-              className="cursor-pointer mx-2"
-              label={reactions?.length}
-              icon={<Message />}
-            />
-          )}
         </div>
       </div>
       {replying && (
@@ -247,21 +235,8 @@ const CommentChatBubble = ({ comment, modalToggler }: props) => {
           <Button onClick={() => setReplying(false)}>Cancel</Button>
         </div>
       )}
-
-      {replys?.length > 0 && (
-        <div className="lg:w-[70%] mx-auto">
-          {replys?.map((reply: replyType) => (
-            <ReplyChatBubble
-              commentId={_id}
-              modalToggler={modalToggler}
-              reply={reply}
-              key={reply?._id}
-            />
-          ))}
-        </div>
-      )}
     </div>
   );
 };
 
-export default CommentChatBubble;
+export default ReplyChatBubble;

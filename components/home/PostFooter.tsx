@@ -178,7 +178,7 @@ const PostFooter = ({ post, setCommentingPost }: props) => {
         fullWidth
         startIcon={<Share />}
       >
-        <span className="hidden lg:inline">Comment</span>
+        <span className="hidden lg:inline">Share</span>
       </Button>
       <label
         onClick={() => setCommentingPost(post)}

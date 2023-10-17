@@ -2,7 +2,6 @@ import { Avatar, Divider, IconButton, TextField } from "@mui/material";
 import React, { useContext, useRef, useState } from "react";
 import { Send } from "@mui/icons-material";
 import { AUTH_CONTEXT, authInfoType } from "@/contexts/AuthProvider";
-import TextArea from "../tools/TextArea";
 import { Textarea } from "@mui/joy";
 import { IUser } from "@/db/models/User";
 import { IMedia } from "@/db/models/Media";
@@ -86,7 +85,7 @@ const CommentModal = ({ commentingPost }: props) => {
               </div>
             </div>
           ) : (
-            <CommentBox post={commentingPost} />
+            <CommentBox modalToggler={modalToggler} post={commentingPost} />
           )}
         </div>
         <label className="modal-backdrop" htmlFor="commentModal">
